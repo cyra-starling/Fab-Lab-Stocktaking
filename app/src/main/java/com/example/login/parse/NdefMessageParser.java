@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 
-import com.example.login.R;
-//import com.ssaurel.nfcreader.model.History;
 import com.example.login.parse.ParsedNdefRecord;
 import com.example.login.parse.SmartPoster;
 import com.example.login.parse.TextRecord;
 import com.example.login.parse.UriRecord;
-//import com.ssaurel.nfcreader.utils.NFCReaderApp;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -24,8 +24,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.common.base.Preconditions;
-import com.example.login.R;
-//import com.example.login.model.History;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;

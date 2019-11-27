@@ -29,9 +29,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.primitives.Bytes;
-import com.example.login.R;
-//import com.ssaurel.nfcreader.model.History;
-//import com.ssaurel.nfcreader.utils.NFCReaderApp;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;

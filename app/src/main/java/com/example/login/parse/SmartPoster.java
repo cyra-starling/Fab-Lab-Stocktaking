@@ -31,10 +31,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.example.login.R;
-//import com.ssaurel.nfcreader.model.History;
-import com.example.login.parse.NdefMessageParser;
-//import com.ssaurel.nfcreader.utils.Utils;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;

@@ -1,5 +1,6 @@
 package com.example.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
@@ -9,19 +10,49 @@ import android.nfc.NfcAdapter;
 import android.nfc.NdefRecord;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.nfc.tech.MifareClassic;
-import android.nfc.tech.MifareUltralight;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.login.parse.*;
 import java.util.*;
 import android.os.Parcelable;
+import com.google.firebase.database.*;
 
 public class MainActivity extends AppCompatActivity {
+    public static final FirebaseDatabase fablabStock = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
+    public static final DatabaseReference totalStock = fablabStock.getReference("totalStock");
+    public static final DatabaseReference transactionHistory = fablabStock.getReference("transactionHistory");
+    public static final DatabaseReference cardList = fablabStock.getReference("cardList");
+    public static ArrayList<String> studentcard = new ArrayList<String>();
+    public static ArrayList<String> staffcard = new ArrayList<String>();
+
+    public static void getCards(){
+        cardList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot studentCards = dataSnapshot.child("studentCards");
+                DataSnapshot staffCards = dataSnapshot.child("staffCards");
+                for (DataSnapshot card: studentCards.getChildren()){
+                    DataSnapshot child = studentCards.child(card.getKey());
+                    studentcard.add(child.getValue().toString());
+                }
+                for (DataSnapshot card: staffCards.getChildren()) {
+                    DataSnapshot child = staffCards.child(card.getKey());
+                    staffcard.add(child.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("error");
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getCards();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TextView text = findViewById(R.id.text);
@@ -36,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, this.getClass())
                         .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
     }
 
     @Override
@@ -75,9 +107,6 @@ public class MainActivity extends AppCompatActivity {
             Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefMessage[] msgs;
 
-            Intent studentpg = new Intent(this, Student.class);
-            startActivity(studentpg);
-
             if (rawMsgs != null) {
                 msgs = new NdefMessage[rawMsgs.length];
 
@@ -88,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 byte[] empty = new byte[0];
                 byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
-                Tag tag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 byte[] payload = dumpTagData(tag).getBytes();
                 NdefRecord record = new NdefRecord(NdefRecord.TNF_UNKNOWN, empty, id, payload);
                 NdefMessage msg = new NdefMessage(new NdefRecord[] {record});
@@ -110,88 +139,36 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < size; i++) {
             ParsedNdefRecord record = records.get(i);
             String str = record.str();
-            builder.append(str).append("\n");
+            builder.append(str);
         }
-
         TextView text = findViewById(R.id.text);
-        text.setText(builder.toString());
+
+        if (studentcard.contains(builder.toString())){
+            Intent studentpg = new Intent(this, Student.class);
+            startActivity(studentpg);
+        }
+        else if (staffcard.contains(builder.toString())){
+            Intent staffpg = new Intent(this, Staff.class);
+            startActivity(staffpg);
+        }
+        else{
+            text.setText("Unrecognised card\nPlease try again\n"+builder.toString());
+        }
     }
 
     private String dumpTagData(Tag tag) {
         StringBuilder sb = new StringBuilder();
         byte[] id = tag.getId();
-        sb.append("ID (hex): ").append(toHex(id)).append('\n');
+        sb.append(toHex(id));
+        /*
         sb.append("ID (reversed hex): ").append(toReversedHex(id)).append('\n');
         sb.append("ID (dec): ").append(toDec(id)).append('\n');
         sb.append("ID (reversed dec): ").append(toReversedDec(id)).append('\n');
-
-        String prefix = "android.nfc.tech.";
-        sb.append("Technologies: ");
-        for (String tech : tag.getTechList()) {
-            sb.append(tech.substring(prefix.length()));
-            sb.append(", ");
-        }
-
-        sb.delete(sb.length() - 2, sb.length());
-
-        for (String tech : tag.getTechList()) {
-            if (tech.equals(MifareClassic.class.getName())) {
-                sb.append('\n');
-                String type = "Unknown";
-
-                try {
-                    MifareClassic mifareTag = MifareClassic.get(tag);
-
-                    switch (mifareTag.getType()) {
-                        case MifareClassic.TYPE_CLASSIC:
-                            type = "Classic";
-                            break;
-                        case MifareClassic.TYPE_PLUS:
-                            type = "Plus";
-                            break;
-                        case MifareClassic.TYPE_PRO:
-                            type = "Pro";
-                            break;
-                    }
-                    sb.append("Mifare Classic type: ");
-                    sb.append(type);
-                    sb.append('\n');
-
-                    sb.append("Mifare size: ");
-                    sb.append(mifareTag.getSize() + " bytes");
-                    sb.append('\n');
-
-                    sb.append("Mifare sectors: ");
-                    sb.append(mifareTag.getSectorCount());
-                    sb.append('\n');
-
-                    sb.append("Mifare blocks: ");
-                    sb.append(mifareTag.getBlockCount());
-                } catch (Exception e) {
-                    sb.append("Mifare classic error: " + e.getMessage());
-                }
-            }
-
-            if (tech.equals(MifareUltralight.class.getName())) {
-                sb.append('\n');
-                MifareUltralight mifareUlTag = MifareUltralight.get(tag);
-                String type = "Unknown";
-                switch (mifareUlTag.getType()) {
-                    case MifareUltralight.TYPE_ULTRALIGHT:
-                        type = "Ultralight";
-                        break;
-                    case MifareUltralight.TYPE_ULTRALIGHT_C:
-                        type = "Ultralight C";
-                        break;
-                }
-                sb.append("Mifare Ultralight type: ");
-                sb.append(type);
-            }
-        }
-
+        */
         return sb.toString();
     }
 
+    // ALL CODE BELOW IS JUST TO CONVERT FROM BYTE ARRAY TO SOMETHING ELSE
     private String toHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (int i = bytes.length - 1; i >= 0; --i) {
@@ -241,5 +218,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
 }
