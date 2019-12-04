@@ -41,6 +41,7 @@ public class Student extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        hashmap = new HashMap<>(); //reset hashmap
         totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
