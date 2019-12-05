@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public static final FirebaseDatabase fablabStock = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
     public static final DatabaseReference cardList = fablabStock.getReference("cardList");
-    public static ArrayList<String> studentcard = new ArrayList<String>();
-    public static ArrayList<String> staffcard = new ArrayList<String>();
+    public static HashMap<String,String> studentcard = new HashMap<String, String>();
+    public static HashMap<String,String> staffcard = new HashMap<String, String>();
 
     /**
      * Get list of cards registered in the database, both Staff's cards and Student's cards.
@@ -47,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
                 DataSnapshot staffCards = dataSnapshot.child("staffCards");
                 for (DataSnapshot card: studentCards.getChildren()){
                     DataSnapshot child = studentCards.child(card.getKey());
-                    studentcard.add(child.getValue().toString());
+                    studentcard.put(child.getKey(),child.getValue().toString());
                 }
                 for (DataSnapshot card: staffCards.getChildren()) {
                     DataSnapshot child = staffCards.child(card.getKey());
-                    staffcard.add(child.getValue().toString());
+                    staffcard.put(child.getKey(),child.getValue().toString());
                 }
             }
 
@@ -168,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
      * to let the student know.
      * @param msgs
      */
+    public static String userId;
+
     private void displayMsgs(NdefMessage[] msgs) {
         if (msgs == null || msgs.length == 0)
             return;
@@ -183,13 +185,15 @@ public class MainActivity extends AppCompatActivity {
         }
         TextView text = findViewById(R.id.text);
 
-        if (studentcard.contains(builder.toString())){
+        if (studentcard.values().contains(builder.toString())){
             Intent studentpg = new Intent(this, Student.class);
             startActivity(studentpg);
+            userId = getKeyByValue(studentcard, builder.toString());
         }
-        else if (staffcard.contains(builder.toString())){
+        else if (staffcard.values().contains(builder.toString())){
             Intent staffpg = new Intent(this, Staff.class);
             startActivity(staffpg);
+            userId = getKeyByValue(staffcard, builder.toString());
         }
         else{
             text.setText("Unrecognised card\nPlease contact FabLab Staff to register your card.\n");
@@ -225,5 +229,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return sb.toString();
+    }
+
+    public  <T, E> T getKeyByValue(Map<T, E> map, E value) {
+        for (Map.Entry<T, E> entry : map.entrySet()) {
+            if (Objects.equals(value, entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

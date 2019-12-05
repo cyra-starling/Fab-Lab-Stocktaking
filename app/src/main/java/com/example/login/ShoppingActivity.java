@@ -1,10 +1,12 @@
 package com.example.login;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,14 +14,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.HashMap;
+import static com.example.login.Student.hashmap;
 
 public class ShoppingActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.baselayout);
-
 
         Intent intent = getIntent();
         final HashMap<String,Integer> hashmap = (HashMap<String,Integer>) intent.getSerializableExtra("count");
@@ -76,7 +79,7 @@ public class ShoppingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ShoppingActivity.this,TransactionHistory.class)
+                Intent intent = new Intent(ShoppingActivity.this,PurposeActivity.class)
                         .putExtra("history",hashmap);
                 startActivity(intent);
             }
@@ -91,5 +94,7 @@ public class ShoppingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
+
 }

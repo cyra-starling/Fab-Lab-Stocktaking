@@ -17,14 +17,13 @@ import android.widget.Toast;
 
 import com.google.firebase.database.*;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+
 
 //metakeitem thingyyyy. add transaction history, update current stock
 public class Student extends AppCompatActivity {
-    ListView CheckoutList, PopupList, PopupList2, MainCart;
+    ListView PopupList, PopupList2, MainCart;
 
     ArrayList<String> categoryList = new ArrayList<>(); //import from firebase
     ArrayList<String> itemList =  new ArrayList<>();
@@ -38,7 +37,6 @@ public class Student extends AppCompatActivity {
 
     Button PopupButton, CheckoutButton, ConfirmButton;
     Dialog popupDialog, popupDialog2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         hashmap = new HashMap<>(); //reset hashmap
@@ -133,9 +131,9 @@ public class Student extends AppCompatActivity {
 
     public void showPopup2(){
         popupDialog2 = new Dialog(Student.this);
-        popupDialog2.setContentView(R.layout.popup2);
+        popupDialog2.setContentView(R.layout.popup);
 
-        PopupList2 = popupDialog2.findViewById(R.id.popupList2);
+        PopupList2 = popupDialog2.findViewById(R.id.popupList);
         ArrayAdapter arrayAdapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,itemList);
         PopupList2.setAdapter(arrayAdapter2);
         PopupList2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
