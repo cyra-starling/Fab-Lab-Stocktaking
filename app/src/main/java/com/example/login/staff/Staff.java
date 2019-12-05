@@ -36,7 +36,7 @@ public class Staff extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //IDS
-        Header = findViewById(R.id.header);
+        //Header = findViewById(R.id.header);
         CheckStock = findViewById(R.id.CheckStockButton);
         Chart = findViewById(R.id.ChartButton);
 
