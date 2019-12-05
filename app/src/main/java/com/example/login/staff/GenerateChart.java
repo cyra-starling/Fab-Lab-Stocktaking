@@ -53,9 +53,9 @@ import java.util.Map.Entry;
 
 public class GenerateChart extends AppCompatActivity {
 
+    public static final FirebaseDatabase fablabStock = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
+    public static final DatabaseReference transactionHistoryRef = fablabStock.getReference("transactionHistory");
 
-    public static final FirebaseDatabase database = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
-    public static final DatabaseReference transactionHistoryRef = database.getReference("transactionHistory");
 //    public static final DatabaseReference totalStock = database.getReference("totalStock");
     private DatePicker datePicker;
     private Calendar calendar;
@@ -109,23 +109,11 @@ public class GenerateChart extends AppCompatActivity {
         anyChartView.setChart(barChart);
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_generate_chart);
-
-        Button refresh = findViewById(R.id.refresh);
-
-        dateView1 = (TextView) findViewById(R.id.dateSelected1);
-        dateView2 = (TextView) findViewById(R.id.dateSelected2);
-        calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-//        showDate(year, month+1, day);
-
+    public void generateChartPrep(String dateFrom, String dateTo){
+        System.out.println(dateFrom);
+        System.out.println(dateTo);
+//        dd1 = dateFrom.substring(0, 7);
+//        mm1 = dateFrom.substring()
 
         final List<DataEntry> data = new ArrayList<>();
 
@@ -134,15 +122,14 @@ public class GenerateChart extends AppCompatActivity {
         spinner = findViewById(R.id.progressBar3);
         spinner.setVisibility(View.VISIBLE);
 
-        transactionHistoryRef.orderByChild("YYMMDD").addListenerForSingleValueEvent(new ValueEventListener() {
+        fablabStock.getReference("transactionHistory").orderByChild("YYMMDD").startAt("190101").endAt("191231").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HashMap itemList = new HashMap<String, Integer>();
-
                 for (DataSnapshot items : dataSnapshot.getChildren()) {
                     HashMap<String,Object> hmap = (HashMap) items.getValue();
                     String currentItem = hmap.get("item").toString();
-                    int itemQuantity = (int)(long)Integer.parseInt((String)hmap.get("quantity"));
+                    int itemQuantity = (int)(long) Integer.parseInt((String) hmap.get("quantity"));
 
                     if(itemList.containsKey(currentItem)){
                         itemList.put(currentItem, (int) itemList.get(currentItem) + itemQuantity);
@@ -165,12 +152,45 @@ public class GenerateChart extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_generate_chart);
+
+        Button refresh = findViewById(R.id.refresh);
+
+        dateView1 = (TextView) findViewById(R.id.dateSelected1);
+        dateView2 = (TextView) findViewById(R.id.dateSelected2);
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+//        showDate1(year, month+1, day);
+//        showDate2(year, month+1, day);
+        showDate1(2019, 01, 01);
+        showDate2(2019, 12, 31);
+
+        // generate chart on start
+        generateChartPrep(dateView1.getText().toString(), dateView2.getText().toString());
+
+        //generate chart upon refresh
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generateChartPrep(dateView1.getText().toString(), dateView2.getText().toString());
+            }
+        });
     }
 
 
     @SuppressWarnings("deprecation")
     public void setDate1(View view) {
-        showDialog(999);
+        showDialog(998);
     }
 
     @SuppressWarnings("deprecation")
@@ -180,22 +200,37 @@ public class GenerateChart extends AppCompatActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        if (id == 999) {
-            return new DatePickerDialog(this, myDateListener, year, month, day);
+        if (id == 998) {
+            return new DatePickerDialog(this, myDateListener1, year, month, day);
+        }
+        else if (id == 999){
+            return new DatePickerDialog(this, myDateListener2, year, month, day);
         }
         return null;
     }
 
-    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
-                    // year, month, day
-                    showDate(arg1, arg2+1, arg3);
-                }
-            };
+    private DatePickerDialog.OnDateSetListener myDateListener1 = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
+            // year, month, day
+            showDate1(arg1, arg2+1, arg3);
+        }
+    };
 
-    private void showDate(int year, int month, int day) {
+    private DatePickerDialog.OnDateSetListener myDateListener2 = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
+            // year, month, day
+            showDate2(arg1, arg2+1, arg3);
+        }
+    };
+
+    private void showDate1(int year, int month, int day) {
         dateView1.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));
+    }
+    private void showDate2(int year, int month, int day) {
+        dateView2.setText(new StringBuilder().append(day).append("/")
                 .append(month).append("/").append(year));
     }
 

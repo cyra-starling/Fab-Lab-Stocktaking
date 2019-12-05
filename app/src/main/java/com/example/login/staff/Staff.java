@@ -35,7 +35,6 @@ public class Staff extends AppCompatActivity {
     Button CheckStock;
     Button Chart;
 
-
     public static final FirebaseDatabase database = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
     public static final DatabaseReference fablabstockRef = database.getReference("fablabstock");
 
