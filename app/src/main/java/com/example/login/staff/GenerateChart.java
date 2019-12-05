@@ -134,7 +134,7 @@ public class GenerateChart extends AppCompatActivity {
         spinner = findViewById(R.id.progressBar3);
         spinner.setVisibility(View.VISIBLE);
 
-        transactionHistoryRef.orderByChild("YYMM").startAt(191101).endAt(191231).addListenerForSingleValueEvent(new ValueEventListener() {
+        transactionHistoryRef.orderByChild("YYMMDD").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HashMap itemList = new HashMap<String, Integer>();
@@ -142,7 +142,7 @@ public class GenerateChart extends AppCompatActivity {
                 for (DataSnapshot items : dataSnapshot.getChildren()) {
                     HashMap<String,Object> hmap = (HashMap) items.getValue();
                     String currentItem = hmap.get("item").toString();
-                    int itemQuantity = (int)(long)hmap.get("quantity");
+                    int itemQuantity = (int)(long)Integer.parseInt((String)hmap.get("quantity"));
 
                     if(itemList.containsKey(currentItem)){
                         itemList.put(currentItem, (int) itemList.get(currentItem) + itemQuantity);

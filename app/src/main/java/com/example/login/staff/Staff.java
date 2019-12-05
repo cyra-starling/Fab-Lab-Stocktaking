@@ -45,7 +45,7 @@ public class Staff extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_staff);
 
         notificationManager = NotificationManagerCompat.from(this);
 
@@ -59,7 +59,7 @@ public class Staff extends AppCompatActivity {
 
             @Override
             public void onClick(View v){
-                Intent toCheckStock = new Intent(Staff.this, CheckStock.class);
+                Intent toCheckStock = new Intent(Staff.this, TransactionHistoryStaff.class);
                 startActivity(toCheckStock);
             }
 
