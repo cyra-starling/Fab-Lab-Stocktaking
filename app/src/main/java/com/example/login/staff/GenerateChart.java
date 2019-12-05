@@ -61,9 +61,13 @@ public class GenerateChart extends AppCompatActivity {
     private Calendar calendar;
     private TextView dateView1;
     private TextView dateView2;
+    private List<DataEntry> data = new ArrayList<>();
+    private Cartesian barChart;
+    private AnyChartView anyChartView;
+
     private int year, month, day;
 
-    private static <K extends Comparable, V extends Comparable> Map<K, V> getSortedMapByValues(final Map<K, V> map){
+    private static <K extends Comparable, V extends Comparable> Map<K, V> getSortedMapByValues(Map<K, V> map){
 
         Map<K, V> mapSortedByValues = new LinkedHashMap<K, V>();
 
@@ -87,8 +91,8 @@ public class GenerateChart extends AppCompatActivity {
 
 
     public void generateChart(List<DataEntry> data) {
-        final AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
-        final Cartesian barChart = AnyChart.bar();
+        anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
+        barChart = AnyChart.bar();
         Bar column = barChart.bar(data);
         column.tooltip()
                 .titleFormat("{%X}")
@@ -110,19 +114,33 @@ public class GenerateChart extends AppCompatActivity {
     }
 
     public void generateChartPrep(String dateFrom, String dateTo){
-        System.out.println(dateFrom);
-        System.out.println(dateTo);
-//        dd1 = dateFrom.substring(0, 7);
-//        mm1 = dateFrom.substring()
+        data = new ArrayList<>();
 
-        final List<DataEntry> data = new ArrayList<>();
+        String[] fromArr = dateFrom.split("/", -2);
+        String[] toArr = dateTo.split("/", -2);
+
+        String dd1 = (fromArr[0].length()==2)? fromArr[0] : ("0" + fromArr[0]);
+        String mm1 = (fromArr[1].length()==2)? fromArr[1] : ("0" + fromArr[1]);
+        String yy1 = fromArr[2].substring(2,4);
+
+        String dd2 = (toArr[0].length()==2)? toArr[0] : ("0" + toArr[0]);
+        String mm2 = (toArr[1].length()==2)? toArr[1] : ("0" + toArr[1]);
+        String yy2 = toArr[2].substring(2,4);
+
+        String yymmdd1 = yy1 + mm1 + dd1;
+        String yymmdd2 = yy2 + mm2 + dd2;
+
+
 
 
         final ProgressBar spinner;
         spinner = findViewById(R.id.progressBar3);
         spinner.setVisibility(View.VISIBLE);
 
-        fablabStock.getReference("transactionHistory").orderByChild("YYMMDD").startAt("190101").endAt("191231").addListenerForSingleValueEvent(new ValueEventListener() {
+        System.out.println(yymmdd1);
+        System.out.println(yymmdd2);
+
+        fablabStock.getReference("transactionHistory").orderByChild("YYMMDD").startAt(yymmdd1).endAt(yymmdd2).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HashMap itemList = new HashMap<String, Integer>();
@@ -143,6 +161,8 @@ public class GenerateChart extends AppCompatActivity {
                 while (it.hasNext()) {
                     Entry<String, Integer> pair = (Entry<String, Integer>) it.next();
                     data.add(new ValueDataEntry(pair.getKey(), (int)(long)pair.getValue()));
+                    System.out.println(pair.getKey());
+                    System.out.println(pair.getValue());
                 }
                 spinner.setVisibility(View.GONE);
 
@@ -174,6 +194,7 @@ public class GenerateChart extends AppCompatActivity {
 //        showDate2(year, month+1, day);
         showDate1(2019, 01, 01);
         showDate2(2019, 12, 31);
+
 
         // generate chart on start
         generateChartPrep(dateView1.getText().toString(), dateView2.getText().toString());
