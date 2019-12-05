@@ -70,4 +70,4 @@ public class TransactionHistory extends AppCompatActivity {
         transactionHistory.child(uuid.toString()).updateChildren(updates);
     }
 }
-}
+

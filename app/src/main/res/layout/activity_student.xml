@@ -13,7 +13,7 @@
         android:layout_height="70dp"
         android:background="@drawable/checkoutbar"
         android:backgroundTint="@color/primary"
-        android:text="Please select your items.\n You can adjust the amount on next screen"
+        android:text="Please select your items.\n You can adjust the amount later"
         android:textAlignment="center"
         android:textSize="20dp"
         android:gravity="center"
@@ -89,6 +89,7 @@
         app:layout_constraintVertical_bias="0">
         <ListView
             android:id="@+id/mainCart"
+            android:longClickable="true"
             android:divider="@color/background"
             android:dividerHeight="10dp"
             android:background="@color/primary"

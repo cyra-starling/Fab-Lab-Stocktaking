@@ -84,6 +84,16 @@ public class Student extends AppCompatActivity {
         MainCart = findViewById(R.id.mainCart);
         ArrayAdapter arrayAdapter3 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,cartList);
         MainCart.setAdapter(arrayAdapter3);
+        MainCart.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(Student.this, cartList.get(position) + " removed", Toast.LENGTH_SHORT).show();
+                hashmap.remove(cartList.get(position));
+                cartList.remove(position);
+                updateCart();
+                return true;
+            }
+        });
 
 
     }

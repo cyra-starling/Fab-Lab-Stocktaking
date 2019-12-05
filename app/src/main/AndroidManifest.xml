@@ -47,8 +47,7 @@
 
         <activity
             android:name=".ShoppingActivity"
-            android:label="Checkout"
-            android:parentActivityName=".Student">
+            android:label="Checkout">
         </activity>
         <activity android:name=".TransactionHistory">
         </activity>
