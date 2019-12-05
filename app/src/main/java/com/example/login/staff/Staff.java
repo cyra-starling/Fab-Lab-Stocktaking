@@ -106,7 +106,7 @@ public class Staff extends AppCompatActivity {
 
             @Override
             public void onClick(View v){
-                Intent toCheckStock = new Intent(Staff.this, CheckStock.class);
+                Intent toCheckStock = new Intent(Staff.this, TransactionHistoryStaff.class);
                 startActivity(toCheckStock);
             }
 
