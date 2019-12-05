@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Staff"
+            android:name=".staff.Staff"
             android:label="@string/title_activity_staff"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -42,6 +42,18 @@
         </activity>
         <activity android:name=".TransactionHistory">
         </activity>
+        <activity android:name=".staff.TransactionHistoryStaff"
+            android:label="TransactionHistory"
+            android:parentActivityName=".staff.Staff"></activity>
+        <activity
+            android:name=".staff.GenerateChart"
+            android:label="GenerateChart"
+            android:parentActivityName=".staff.Staff"></activity>
+        <activity
+            android:name=".staff.CheckStock"
+            android:label="CheckStock"
+            android:parentActivityName=".staff.Staff"></activity>
+
     </application>
 
 </manifest>
