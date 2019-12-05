@@ -1,9 +1,26 @@
 package com.example.login.staff;
 
 import com.example.login.R;
+
+import java.util.Calendar;
+
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+
+import android.os.Bundle;
+
+import android.view.Menu;
+import android.view.View;
+
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,40 +55,13 @@ public class GenerateChart extends AppCompatActivity {
 
 
     public static final FirebaseDatabase database = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
-    public static final DatabaseReference transactionHistoryTestRef = database.getReference("transactionHistoryTest");
+    public static final DatabaseReference transactionHistoryRef = database.getReference("transactionHistory");
 //    public static final DatabaseReference totalStock = database.getReference("totalStock");
-
-    /*
-    //method to get Number of Specified Item taken
-    public int getNumberOfItemTaken(final String item){
-        final List<Long> numbers = new ArrayList<>();
-        transactionHistory.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot transactions : dataSnapshot.getChildren()) {
-                    String c = transactions.child("item").getValue().toString();
-                    if (c.equals(item)) {
-                        System.out.println(transactions.child("item").getValue().toString() +" "+ transactions.child("quantity").getValue());
-                        numbers.add((Long) transactions.child("quantity").getValue());
-                    }
-                    System.out.println("???");
-                    //System.out.println("...");
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("CANCELLED");
-            }
-        });
-        System.out.println("GETTIN NUMBERR");
-        int result = 0;
-
-        for (Long i : numbers){
-            result+=i;
-        };
-        return result;
-    }
-    */
+    private DatePicker datePicker;
+    private Calendar calendar;
+    private TextView dateView1;
+    private TextView dateView2;
+    private int year, month, day;
 
     private static <K extends Comparable, V extends Comparable> Map<K, V> getSortedMapByValues(final Map<K, V> map){
 
@@ -95,22 +85,56 @@ public class GenerateChart extends AppCompatActivity {
         return mapSortedByValues;
     }
 
+
+    public void generateChart(List<DataEntry> data) {
+        final AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
+        final Cartesian barChart = AnyChart.bar();
+        Bar column = barChart.bar(data);
+        column.tooltip()
+                .titleFormat("{%X}")
+                .position(Position.CENTER_BOTTOM)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .offsetX(0d)
+                .offsetY(5d)
+                .format("{%Value}{groupsSeparator: }");
+        barChart.barGroupsPadding(0);
+        barChart.animation(false);
+        barChart.title("Amount of Item Taken ");
+        barChart.yScale().minimum(0d);
+        barChart.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
+        barChart.tooltip().positionMode(TooltipPositionMode.POINT);
+        barChart.interactivity().hoverMode(HoverMode.BY_X);
+        barChart.xAxis(0).title("Items");
+        barChart.yAxis(0).title("Number");
+        anyChartView.setChart(barChart);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_chart);
 
-        final AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
-        Button buildChart = findViewById(R.id.BuildChart);
+        Button refresh = findViewById(R.id.refresh);
 
-        final Cartesian barChart = AnyChart.bar();
+        dateView1 = (TextView) findViewById(R.id.dateSelected1);
+        dateView2 = (TextView) findViewById(R.id.dateSelected2);
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+//        showDate(year, month+1, day);
+
+
         final List<DataEntry> data = new ArrayList<>();
 
 
+        final ProgressBar spinner;
+        spinner = findViewById(R.id.progressBar3);
+        spinner.setVisibility(View.VISIBLE);
 
-
-//        totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
-        transactionHistoryTestRef.orderByChild("date").startAt(1911).endAt(1914).addListenerForSingleValueEvent(new ValueEventListener() {
+        transactionHistoryRef.orderByChild("YYMM").startAt(191101).endAt(191231).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HashMap itemList = new HashMap<String, Integer>();
@@ -127,41 +151,52 @@ public class GenerateChart extends AppCompatActivity {
                         itemList.put(currentItem, itemQuantity);
                     }
                 }
-
                 // loop through newly created Hash Map
                 Iterator<Entry<String, Integer>> it = getSortedMapByValues(itemList).entrySet().iterator();
                 while (it.hasNext()) {
                     Entry<String, Integer> pair = (Entry<String, Integer>) it.next();
                     data.add(new ValueDataEntry(pair.getKey(), (int)(long)pair.getValue()));
                 }
+                spinner.setVisibility(View.GONE);
+
+                generateChart(data);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
-        buildChart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bar column = barChart.bar(data);
-                column.tooltip()
-                        .titleFormat("{%X}")
-                        .position(Position.CENTER_BOTTOM)
-                        .anchor(Anchor.CENTER_BOTTOM)
-                        .offsetX(0d)
-                        .offsetY(5d)
-                        .format("{%Value}{groupsSeparator: }");
-                barChart.barGroupsPadding(0);
-                barChart.animation(false);
-                barChart.title("Amount of Item Taken ");
-                barChart.yScale().minimum(0d);
-                barChart.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
-                barChart.tooltip().positionMode(TooltipPositionMode.POINT);
-                barChart.interactivity().hoverMode(HoverMode.BY_X);
-                barChart.xAxis(0).title("Items");
-                barChart.yAxis(0).title("Number");
-                anyChartView.setChart(barChart);
-            }
-        });
     }
+
+
+    @SuppressWarnings("deprecation")
+    public void setDate1(View view) {
+        showDialog(999);
+    }
+
+    @SuppressWarnings("deprecation")
+    public void setDate2(View view) {
+        showDialog(999);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if (id == 999) {
+            return new DatePickerDialog(this, myDateListener, year, month, day);
+        }
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
+                    // year, month, day
+                    showDate(arg1, arg2+1, arg3);
+                }
+            };
+
+    private void showDate(int year, int month, int day) {
+        dateView1.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));
+    }
+
 }
