@@ -35,7 +35,6 @@ public class Staff extends AppCompatActivity {
     Button CheckStock;
     Button Chart;
 
-
     public static final FirebaseDatabase database = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
     public static final DatabaseReference fablabstockRef = database.getReference("fablabstock");
 
@@ -45,7 +44,7 @@ public class Staff extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_staff);
 
         notificationManager = NotificationManagerCompat.from(this);
 
