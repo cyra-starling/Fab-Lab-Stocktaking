@@ -20,12 +20,15 @@ import com.google.firebase.database.*;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
+
 //metakeitem thingyyyy. add transaction history, update current stock
 public class Student extends AppCompatActivity {
-    ListView CheckoutList, PopupList, MainCart;
+    ListView CheckoutList, PopupList, PopupList2, MainCart;
 
-    ArrayList<String> arrayList = new ArrayList<>(); //import from firebase
-    ArrayList<Long> arrayList2 =  new ArrayList<>();
+    ArrayList<String> categoryList = new ArrayList<>(); //import from firebase
+    ArrayList<String> itemList =  new ArrayList<>();
+    ArrayList<Long> stockList = new ArrayList<>();
     ArrayList<String> cartList = new ArrayList<>();
     public static HashMap<String,Integer> hashmap = new HashMap<String,Integer>();
 
@@ -34,25 +37,22 @@ public class Student extends AppCompatActivity {
     public static final DatabaseReference totalStock = fablabStock.getReference("totalStock");
 
     Button PopupButton, CheckoutButton, ConfirmButton;
-    Dialog popupDialog, checkoutDialog;
+    Dialog popupDialog, popupDialog2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        hashmap = new HashMap<>(); //reset hashmap
         totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                arrayList = new ArrayList<>();
-                arrayList2 = new ArrayList<>();
-                for(DataSnapshot item: dataSnapshot.getChildren()) {
-                    arrayList.add(item.getKey());
-                    arrayList2.add((Long)item.getValue());
+                categoryList = new ArrayList<>();
+                for(DataSnapshot category: dataSnapshot.getChildren()){
+                    categoryList.add(category.getKey());
                     final ProgressBar spinner;
                     spinner = findViewById(R.id.progressBar);
                     spinner.setVisibility(View.GONE);
-
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -65,10 +65,12 @@ public class Student extends AppCompatActivity {
         PopupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (arrayList.size() == 0){
+                if (categoryList.size() == 0){
                     Toast.makeText(Student.this, "Fetching data. Please wait.", Toast.LENGTH_SHORT).show();
                 }
-                else{showPopup();}
+                else{
+                    showPopup();
+                }
             }
         });
 
@@ -88,52 +90,78 @@ public class Student extends AppCompatActivity {
 
 
     }
-
-
     public void showPopup(){
         popupDialog = new Dialog(Student.this);
         popupDialog.setContentView(R.layout.popup);
-
         PopupList = popupDialog.findViewById(R.id.popupList);
-        ArrayAdapter arrayAdapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,arrayList);
-        PopupList.setAdapter(arrayAdapter2);
+        ArrayAdapter arrayAdapter4 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,categoryList);
+        PopupList.setAdapter(arrayAdapter4);
         PopupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                arrayList2.set(position, arrayList2.get(position)-1);
-                cartList.add(arrayList.get(position));
-                //added
-                if (hashmap.containsKey(arrayList.get(position))){
-                    int count = hashmap.get(arrayList.get(position));
-                    hashmap.remove(arrayList.get(position));
-                    hashmap.put(arrayList.get(position),count + 1);
-                }
-
-                else if (!hashmap.containsKey(arrayList.get(position))){
-                    hashmap.put(arrayList.get(position), 1);
-                }
-
-
-                //
-                updateCart();
-                Toast.makeText(Student.this, arrayList.get(position) +" added to cart(" + arrayList2.get(position) + " left)", Toast.LENGTH_SHORT);
-                popupDialog.dismiss();
-
-                /* not used toaster with predefined time
-                final Toast t = Toast.makeText(MainActivity.this, arrayList.get(position) +" added to cart(" + arrayList2.get(position) + " left)", Toast.LENGTH_SHORT);
-                    t.show();
-                    Handler handler = new Handler(); // toast time setter
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            t.cancel();
+                final String category = categoryList.get(position);
+                final ProgressBar spinner;
+                spinner = findViewById(R.id.progressBar);
+                spinner.setVisibility(View.VISIBLE);
+                totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        itemList = new ArrayList<>();
+                        stockList = new ArrayList<>();
+                        DataSnapshot item = dataSnapshot.child(category);
+                        for (DataSnapshot thing: item.getChildren()) {
+                            itemList.add(thing.getKey());
+                            stockList.add((Long) thing.getValue());
+                            final ProgressBar spinner;
+                            spinner = findViewById(R.id.progressBar);
+                            spinner.setVisibility(View.GONE);
                         }
-                    }, 500);
-                 */
+                        showPopup2();
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            popupDialog.dismiss();
             }
         });
-
         popupDialog.show();
+    }
+
+
+    public void showPopup2(){
+        popupDialog2 = new Dialog(Student.this);
+        popupDialog2.setContentView(R.layout.popup2);
+
+        PopupList2 = popupDialog2.findViewById(R.id.popupList2);
+        ArrayAdapter arrayAdapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,itemList);
+        PopupList2.setAdapter(arrayAdapter2);
+        PopupList2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                stockList.set(position, stockList.get(position)-1);
+                cartList.add(itemList.get(position));
+                //added
+                if (hashmap.containsKey(itemList.get(position))){
+                    int count = hashmap.get(itemList.get(position));
+                    hashmap.remove(itemList.get(position));
+                    hashmap.put(itemList.get(position),count + 1);
+                }
+
+                else if (!hashmap.containsKey(itemList.get(position))){
+                    hashmap.put(itemList.get(position), 1);
+                }
+                //
+                updateCart();
+                Toast.makeText(Student.this, itemList.get(position) +" added to cart", Toast.LENGTH_SHORT);
+                popupDialog2.dismiss();
+
+            }
+        });
+        popupDialog2.show();
+
     }
 
 
@@ -146,8 +174,4 @@ public class Student extends AppCompatActivity {
 
     }
 
-    public void cfmCheckout(){
-        cartList = new ArrayList<>();
-        updateCart();
-    }
 }

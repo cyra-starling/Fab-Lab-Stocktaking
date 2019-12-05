@@ -2,6 +2,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="@drawable/roundrect"
+    android:backgroundTint="@color/primary"
     android:padding="6dp"
     android:id = "@+id/cartlayout">
 
@@ -23,6 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
+        android:background="@drawable/roundrect"
+        android:textColor="@color/primary_text"
         android:text="+"
         android:id = "@+id/add"/>
 
@@ -40,10 +44,12 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
+        android:background="@drawable/roundrect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:text="-"
+        android:textColor="@color/primary_text"
         android:id = "@+id/minus"/>
 
 </LinearLayout>

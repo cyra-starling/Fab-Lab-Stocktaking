@@ -19,6 +19,8 @@ public class ShoppingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.baselayout);
+
+
         Intent intent = getIntent();
         final HashMap<String,Integer> hashmap = (HashMap<String,Integer>) intent.getSerializableExtra("count");
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -67,11 +69,10 @@ public class ShoppingActivity extends AppCompatActivity {
         }
 
         //add the submit and back buttons
-        View view = layoutInflater.inflate(R.layout.listview,null,false);
 
         //todo: submit button goes to ncf reader
         //update transaction history
-        Button submit = view.findViewById(R.id.submit);
+        Button submit = findViewById(R.id.checkoutSubmit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +83,7 @@ public class ShoppingActivity extends AppCompatActivity {
         });
 
         //back button
-        Button backtoStart = view.findViewById(R.id.BacktoStart);
+        Button backtoStart = findViewById(R.id.checkoutCancel);
         backtoStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +91,5 @@ public class ShoppingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        layout.addView(view);
     }
 }

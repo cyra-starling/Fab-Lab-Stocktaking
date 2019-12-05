@@ -9,12 +9,12 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/popupTopBar"
+        android:id="@+id/popupTopBar2"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_gravity="start"
         android:background="@drawable/checkoutbar"
-        android:text="Pick a Category"
+        android:text="Pick your item"
         android:textSize="30dp"
         android:textColor="@color/primary_text"
         android:textAlignment="center"
@@ -24,9 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/popupTopBar">
+        android:layout_below="@+id/popupTopBar2">
         <ListView
-            android:id="@+id/popupList"
+            android:id="@+id/popupList2"
             android:divider="@color/background"
             android:dividerHeight="10dp"
             android:background="@color/primary"
