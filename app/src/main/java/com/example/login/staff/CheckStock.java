@@ -1,34 +1,37 @@
 package com.example.login.staff;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
-import android.widget.TextView;
-import android.view.ViewGroup;
-import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.login.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-//import com.google.firebase.database.R;
-import com.google.firebase.database.ValueEventListener;
+import android.content.Intent;
+import android.graphics.Color;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.TextView;
+import android.view.ViewGroup;
+import android.graphics.Color;
+
+import com.google.firebase.database.*;
 import com.levitnudi.legacytableview.LegacyTableView;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static com.levitnudi.legacytableview.LegacyTableView.MAASAI;
+import static com.levitnudi.legacytableview.LegacyTableView.readLegacyContent;
 
 
 public class CheckStock extends AppCompatActivity {
@@ -38,6 +41,11 @@ public class CheckStock extends AppCompatActivity {
     public static final DatabaseReference totalStock = fablabStock.getReference("totalStock");
     public static DatabaseReference transactionHistory = fablabStock.getReference("transactionHistory");
     public static int dateSelected;
+
+    //date selected for date dropdown
+    public static int dateSelected;
+
+    //intent KEYS
     public static final String LGcontent = "lgcontent";
     public static final String LGtitle = "lgtitle";
 
@@ -49,18 +57,25 @@ public class CheckStock extends AppCompatActivity {
         Intent intentTo = getIntent();
         System.out.println();
 
+
+        // get Values after search button
+
         String[] LegacyTitle = intentTo.getStringArrayExtra(CheckStock.LGtitle);
         String[] LegacyContent = intentTo.getStringArrayExtra(CheckStock.LGcontent);
 
 
+
+
+        // only after search, LegacyConent!=null, so build table
         if (LegacyContent!=null) {
-            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX");
+
             LegacyTableView.insertLegacyTitle(LegacyTitle);
             LegacyTableView.insertLegacyContent(LegacyContent);
 
             LegacyTableView legacyTableView = (LegacyTableView) findViewById(R.id.legacy_table_view);
             legacyTableView.setContent(LegacyTableView.readLegacyContent());
             legacyTableView.setTitle(LegacyTableView.readLegacyTitle());
+
 
             legacyTableView.setTablePadding(7);
 
@@ -72,6 +87,7 @@ public class CheckStock extends AppCompatActivity {
             //remember to build your table as the last step
             legacyTableView.build();
         }
+
 
         final Spinner items = findViewById(R.id.items);
         final Spinner date = findViewById(R.id.date);
@@ -94,6 +110,38 @@ public class CheckStock extends AppCompatActivity {
         dateSpinner.add("Dec");
 
         ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, dateSpinner){
+
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        date.setAdapter(dateAdapter);
+
 
             @Override
             public boolean isEnabled(int position){
@@ -169,7 +217,11 @@ public class CheckStock extends AppCompatActivity {
                 }
             }
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+
+
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
                 if(position == 0){
@@ -185,7 +237,7 @@ public class CheckStock extends AppCompatActivity {
 
 
         items.setAdapter(itemAdapter);
-        LegacyTableView.insertLegacyTitle("Date","Name","Student ID","Item","Quantity","Purpose","Pillar");
+        LegacyTableView.insertLegacyTitle("Date (YYMMDD)","Student ID","Item","Quantity","Purpose");
 
         items.setOnItemSelectedListener(
             new AdapterView.OnItemSelectedListener() {
@@ -257,6 +309,81 @@ public class CheckStock extends AppCompatActivity {
                                 System.out.println("CANCELLED");
                             }
                         });
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(
+                            AdapterView<?> parent, View view, final int position, long id) {
+                        //Toast.makeText(CheckStock.this,"Selected Item: " + items.getItemAtPosition(position)
+                        //+ " id=" + id,Toast.LENGTH_LONG).show();
+                        if (position > 0) {
+                            transactionHistory.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                        String[] value = new String[5];
+                                        String item ="";
+                                        HashMap<String, Object> hmap = (HashMap) d.getValue();
+                                        if (hmap.get("item").toString().length()==7){
+                                            item += "Transistor";
+                                        }
+                                        else if (hmap.get("item").toString().length()==6){
+                                            item += "Resistor";
+                                        }
+                                        else if (hmap.get("item").toString().length()<=5){
+                                            item += "Capacitor";
+                                        }
+                                        //System.out.println(d.getKey().substring(4,6));
+                                        //System.out.println(d.getKey().substring(4,7));
+                                        //System.out.println(dateSelected);
+                                        System.out.println(hmap.get("YYMMDD").toString().substring(2,4));
+
+                                        if (item.equals(items.getItemAtPosition(position))
+                                                && hmap.get("YYMMDD").toString().substring(2,4).equals(Integer.toString(dateSelected-1))) {
+                                            value[0] = hmap.get("YYMMDD").toString();
+                                            value[1] = hmap.get("studentId").toString();
+                                            value[2] = item + ": " + hmap.get("item").toString();
+                                            value[3] = hmap.get("quantity").toString();
+                                            value[4] = hmap.get("purpose").toString();
+
+                                        } else if (items.getItemAtPosition(position).equals("All")
+                                                && hmap.get("YYMMDD").toString().substring(2,4).equals(Integer.toString(dateSelected-1))) {
+                                            value[0] = hmap.get("YYMMDD").toString();
+                                            value[1] = hmap.get("studentId").toString();
+                                            value[2] = item + ": " + hmap.get("item").toString();
+                                            value[3] = hmap.get("quantity").toString();
+                                            value[4] = hmap.get("purpose").toString();
+
+                                        } else if (items.getItemAtPosition(position).equals("All")
+                                                && dateSelected==1) {
+                                            value[0] = hmap.get("YYMMDD").toString();
+                                            value[1] = hmap.get("studentId").toString();
+                                            value[2] = item + ": " + hmap.get("item").toString();
+                                            value[3] = hmap.get("quantity").toString();
+                                            value[4] = hmap.get("purpose").toString();
+                                        }
+
+                                        if (item.equals(items.getItemAtPosition(position))
+                                                && dateSelected==1) {
+                                            value[0] = hmap.get("YYMMDD").toString();
+                                            value[1] = hmap.get("studentId").toString();
+                                            value[2] = item + ": " + hmap.get("item").toString();
+                                            value[3] = hmap.get("quantity").toString();
+                                            value[4] = hmap.get("purpose").toString();
+                                        }
+
+
+                                        if (value[0] != null) {
+                                            LegacyTableView.insertLegacyContent(value);
+                                        }
+
+                                    };
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    System.out.println("CANCELLED");
+                                }
+                            });
+                        }
                     }
                 }
                 public void onNothingSelected(AdapterView<?> parent) {
