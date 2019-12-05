@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Staff">
+    tools:context=".staff.Staff">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -29,5 +29,33 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="STAFF MAIN"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/CheckStockButton"
+        android:layout_width="134dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="155dp"
+        android:layout_gravity="center"
+        android:text="Check Stock"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/ChartButton"
+        android:layout_width="134dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center"
+        android:text="Chart"
+        android:textStyle="bold"/>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

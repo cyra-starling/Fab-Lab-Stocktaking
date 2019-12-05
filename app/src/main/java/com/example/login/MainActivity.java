@@ -11,12 +11,13 @@ import android.nfc.NdefRecord;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.login.parse.*;
 import java.util.*;
 import android.os.Parcelable;
+
+import com.example.login.staff.Staff;
 import com.google.firebase.database.*;
 
 public class MainActivity extends AppCompatActivity {
