@@ -43,8 +43,8 @@ public class ShoppingActivity extends AppCompatActivity {
                     int number = Integer.parseInt(count.getText().toString());
                     number += 1;
                     count.setText(Integer.toString(number));
-                    hashmap.remove(text.toString());
-                    hashmap.put(text.toString(),number); //update hashmap
+                    hashmap.remove(text.getText().toString());
+                    hashmap.put(text.getText().toString(),number); //update hashmap
                 }
             });
 
@@ -61,8 +61,8 @@ public class ShoppingActivity extends AppCompatActivity {
                         Toast.makeText(ShoppingActivity.this, "Please add items into the cart",Toast.LENGTH_SHORT).show();
                     }
                     count.setText(Integer.toString(number));
-                    hashmap.remove(text.toString());
-                    hashmap.put(text.toString(),number); //update hashmap
+                    hashmap.remove(text.getText().toString());
+                    hashmap.put(text.getText().toString(),number); //update hashmap
                 }
             });
             layout.addView(view);

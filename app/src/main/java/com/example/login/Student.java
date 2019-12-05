@@ -124,7 +124,7 @@ public class Student extends AppCompatActivity {
 
                     }
                 });
-            popupDialog.dismiss();
+                popupDialog.dismiss();
             }
         });
         popupDialog.show();
@@ -141,21 +141,25 @@ public class Student extends AppCompatActivity {
         PopupList2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                stockList.set(position, stockList.get(position)-1);
-                cartList.add(itemList.get(position));
-                //added
-                if (hashmap.containsKey(itemList.get(position))){
-                    int count = hashmap.get(itemList.get(position));
-                    hashmap.remove(itemList.get(position));
-                    hashmap.put(itemList.get(position),count + 1);
+                if (cartList.contains(itemList.get(position))){
+                    Toast.makeText(Student.this, "Item already exists!",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    stockList.set(position, stockList.get(position) - 1);
+                    cartList.add(itemList.get(position));
+
+                    if (hashmap.containsKey(itemList.get(position))) {
+                        int count = hashmap.get(itemList.get(position));
+                        hashmap.remove(itemList.get(position));
+                        hashmap.put(itemList.get(position), count + 1);
+                    } else if (!hashmap.containsKey(itemList.get(position))) {
+                        hashmap.put(itemList.get(position), 1);
+                    }
+                    Toast.makeText(Student.this, itemList.get(position) +" added to cart", Toast.LENGTH_SHORT).show();
+
                 }
 
-                else if (!hashmap.containsKey(itemList.get(position))){
-                    hashmap.put(itemList.get(position), 1);
-                }
-                //
                 updateCart();
-                Toast.makeText(Student.this, itemList.get(position) +" added to cart", Toast.LENGTH_SHORT);
                 popupDialog2.dismiss();
 
             }
