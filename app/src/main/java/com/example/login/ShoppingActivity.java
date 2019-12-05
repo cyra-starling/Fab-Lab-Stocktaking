@@ -73,7 +73,6 @@ public class ShoppingActivity extends AppCompatActivity {
 
         //add the submit and back buttons
 
-        //todo: submit button goes to ncf reader
         //update transaction history
         Button submit = findViewById(R.id.checkoutSubmit);
         submit.setOnClickListener(new View.OnClickListener() {

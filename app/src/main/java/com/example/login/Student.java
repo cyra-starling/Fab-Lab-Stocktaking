@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-//metakeitem thingyyyy. add transaction history, update current stock
 public class Student extends AppCompatActivity {
     ListView PopupList, PopupList2, MainCart;
 
