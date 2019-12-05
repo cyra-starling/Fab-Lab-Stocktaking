@@ -6,14 +6,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,15 +39,16 @@ public class TransactionHistory extends AppCompatActivity {
         Intent intent = getIntent();
         HashMap<String,Integer> hashmap = (HashMap<String, Integer>) intent.getSerializableExtra("history");
         TextView transaction_list = findViewById(R.id.transaction_list);
-        transaction_list.setText(hashmap.toString());
+        String transactionText = "";
         //update transaction history
-
         Iterator it = hashmap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             updateTransactionHistory(pair.getKey().toString(), pair.getValue().toString());
+            transactionText = transactionText + pair.getKey().toString() + ":" + pair.getValue().toString() + "\n";
             it.remove(); // avoids a ConcurrentModificationException
         }
+        transaction_list.setText(transactionText);
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override

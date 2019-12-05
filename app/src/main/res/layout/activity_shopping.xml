@@ -5,7 +5,7 @@
     android:layout_height="70dp"
     android:orientation="horizontal"
     android:layout_margin="10dp"
-    android:background="@drawable/roundrect"
+    android:background="@drawable/roundrectboardered"
     android:backgroundTint="@color/primary"
     android:padding="6dp"
     android:id = "@+id/cartlayout">

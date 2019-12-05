@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class Student extends AppCompatActivity {
     ListView PopupList, PopupList2, MainCart;
 
-    ArrayList<String> categoryList = new ArrayList<>(); //import from firebase
+    public static ArrayList<String> categoryList = new ArrayList<>(); //import from firebase
     ArrayList<String> itemList =  new ArrayList<>();
     ArrayList<Long> stockList = new ArrayList<>();
     ArrayList<String> cartList = new ArrayList<>();
