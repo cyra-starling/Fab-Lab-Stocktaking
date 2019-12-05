@@ -19,10 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -119,5 +115,6 @@ public class Staff extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
 }
 
