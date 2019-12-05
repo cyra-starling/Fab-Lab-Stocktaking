@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".staff.TransactionHistoryStaff">
 
     <LinearLayout
@@ -24,25 +25,40 @@
             android:layout_marginTop="8dp"></ListView>
     </LinearLayout>
 
-    <Spinner
-        android:id="@+id/monthSpinner"
-        android:layout_width="275dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.433"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-    <Spinner
-        android:id="@+id/itemSpinner"
-        android:layout_width="275dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/monthSpinner" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please select month and item"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/monthSpinner"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Spinner
+            android:id="@+id/monthSpinner"
+            android:layout_width="275dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/spinner"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
+        <Spinner
+            android:id="@+id/itemSpinner"
+            android:layout_width="275dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/spinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/monthSpinner" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

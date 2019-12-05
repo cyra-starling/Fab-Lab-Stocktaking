@@ -34,7 +34,7 @@ public class Student extends AppCompatActivity {
     public static final FirebaseDatabase fablabStock = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
     public static final DatabaseReference totalStock = fablabStock.getReference("totalStock");
 
-    Button PopupButton, CheckoutButton, ConfirmButton;
+    Button PopupButton, CheckoutButton;
     Dialog popupDialog, popupDialog2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
