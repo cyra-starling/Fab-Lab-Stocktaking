@@ -50,7 +50,7 @@ public class Staff extends AppCompatActivity {
         notificationManager = NotificationManagerCompat.from(this);
 
         //IDS
-        Header = findViewById(R.id.header);
+        //Header = findViewById(R.id.header);
         CheckStock = findViewById(R.id.CheckStockButton);
         Chart = findViewById(R.id.ChartButton);
 
