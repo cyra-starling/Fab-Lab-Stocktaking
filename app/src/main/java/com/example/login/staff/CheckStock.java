@@ -40,7 +40,7 @@ public class CheckStock extends AppCompatActivity {
     public static final FirebaseDatabase fablabStock = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
     public static final DatabaseReference totalStock = fablabStock.getReference("totalStock");
     public static DatabaseReference transactionHistory = fablabStock.getReference("transactionHistory");
-    public static int dateSelected;
+
 
     //date selected for date dropdown
     public static int dateSelected;
@@ -140,38 +140,8 @@ public class CheckStock extends AppCompatActivity {
             }
         };
 
-        date.setAdapter(dateAdapter);
 
-
-            @Override
-            public boolean isEnabled(int position){
-                if(position == 0)
-                {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if(position == 0){
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY);
-                }
-                else {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
-
+        //set adapter for date
         date.setAdapter(dateAdapter);
         date.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -241,75 +211,7 @@ public class CheckStock extends AppCompatActivity {
 
         items.setOnItemSelectedListener(
             new AdapterView.OnItemSelectedListener() {
-                public void onItemSelected(
-                        AdapterView<?> parent, View view, final int position, long id) {
-                    //Toast.makeText(CheckStock.this,"Selected Item: " + items.getItemAtPosition(position)
-                    //+ " id=" + id,Toast.LENGTH_LONG).show();
-                    if (position > 0) {
-                        transactionHistory.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                                    String[] value = new String[7];
-                                    HashMap<String, Object> hmap = (HashMap) d.getValue();
-                                    //System.out.println(d.getKey().substring(4,6));
-                                    //System.out.println(d.getKey().substring(4,7));
-                                    //System.out.println(dateSelected);
-                                    if (hmap.get("item").toString().equals(items.getItemAtPosition(position))
-                                            && d.getKey().substring(4, 7).equals(date.getItemAtPosition(dateSelected))) {
-                                        value[0] = d.getKey().substring(4, 10);
-                                        value[1] = hmap.get("name").toString();
-                                        value[2] = hmap.get("studentId").toString();
-                                        value[3] = hmap.get("item").toString();
-                                        value[4] = hmap.get("quantity").toString();
-                                        value[5] = hmap.get("purpose").toString();
-                                        value[6] = hmap.get("pillar").toString();
-                                        System.out.println("ABCCCCCCCCCC");
-                                    } else if (items.getItemAtPosition(position).equals("All")
-                                            && d.getKey().substring(4, 7).equals(date.getItemAtPosition(dateSelected))) {
-                                        value[0] = d.getKey().substring(4, 10);
-                                        value[1] = hmap.get("name").toString();
-                                        value[2] = hmap.get("studentId").toString();
-                                        value[3] = hmap.get("item").toString();
-                                        value[4] = hmap.get("quantity").toString();
-                                        value[5] = hmap.get("purpose").toString();
-                                        value[6] = hmap.get("pillar").toString();
-                                    } else if (items.getItemAtPosition(position).equals("All")
-                                            && date.getItemAtPosition(dateSelected).equals("All")) {
-                                        value[0] = d.getKey().substring(4, 10);
-                                        value[1] = hmap.get("name").toString();
-                                        value[2] = hmap.get("studentId").toString();
-                                        value[3] = hmap.get("item").toString();
-                                        value[4] = hmap.get("quantity").toString();
-                                        value[5] = hmap.get("purpose").toString();
-                                        value[6] = hmap.get("pillar").toString();
-                                    }
 
-                                    if (hmap.get("item").toString().equals(items.getItemAtPosition(position))
-                                            && date.getItemAtPosition(dateSelected).equals("All")) {
-                                        value[0] = d.getKey().substring(4, 10);
-                                        value[1] = hmap.get("name").toString();
-                                        value[2] = hmap.get("studentId").toString();
-                                        value[3] = hmap.get("item").toString();
-                                        value[4] = hmap.get("quantity").toString();
-                                        value[5] = hmap.get("purpose").toString();
-                                        value[6] = hmap.get("pillar").toString();
-                                        System.out.println("ABCCCCCCCCCC");
-                                    }
-
-
-                                    if (value[0] != null) {
-                                        LegacyTableView.insertLegacyContent(value);
-                                    }
-
-                                };
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                System.out.println("CANCELLED");
-                            }
-                        });
-                new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(
                             AdapterView<?> parent, View view, final int position, long id) {
                         //Toast.makeText(CheckStock.this,"Selected Item: " + items.getItemAtPosition(position)
@@ -385,23 +287,25 @@ public class CheckStock extends AppCompatActivity {
                             });
                         }
                     }
-                }
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
             });
 
+
+        //Button to search
         Button search = findViewById(R.id.search);
 
+        //intent back to checkstock
         final Intent intentFROM = new Intent(CheckStock.this, CheckStock.class);
 
-        intentFROM.putExtra(CheckStock.LGcontent, LegacyTableView.readLegacyContent());
-        for (String i : LegacyTableView.readLegacyContent()){
-            System.out.println(i);
-        }
-        intentFROM.putExtra(CheckStock.LGtitle, LegacyTableView.readLegacyTitle());
-        for (String i : LegacyTableView.readLegacyTitle()){
-            System.out.println(i);
-        };
+//        intentFROM.putExtra(CheckStock.LGcontent, LegacyTableView.readLegacyContent());
+//        for (String i : LegacyTableView.readLegacyContent()){
+//            System.out.println(i);
+//        }
+//        intentFROM.putExtra(CheckStock.LGtitle, LegacyTableView.readLegacyTitle());
+//        for (String i : LegacyTableView.readLegacyTitle()){
+//            System.out.println(i);
+//        };
 
 
 
