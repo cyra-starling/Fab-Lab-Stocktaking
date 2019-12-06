@@ -66,6 +66,7 @@ public class TransactionHistoryStaff extends AppCompatActivity {
         monthNum.put("11","Nov");
         monthNum.put("12","Dec");
 
+        dateSpinner.add("Please select a month");
         dateSpinner.add("All");
         dateSpinner.add("Jan");
         dateSpinner.add("Feb");
@@ -81,6 +82,7 @@ public class TransactionHistoryStaff extends AppCompatActivity {
         dateSpinner.add("Dec");
 
         itemSpinner.add("Please select an item");
+        itemSpinner.add("All");
 
         totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -201,8 +203,29 @@ public class TransactionHistoryStaff extends AppCompatActivity {
                     String checkMonth = ((String)hmap.get("YYMMDD")).substring(2,4);
                     System.out.println(checkItem + "        asdfasdfasfasdf     " + checkMonth);
                     System.out.println(item + "        asdfasdfasfasdf     " + month);
-                    if(month == "All") {
+                    if(month == "All" && item == "All") {
+
+                        value += d.getKey() + "\n\n";
+                        value += "Student ID\t: " + hmap.get("studentId") + "\n";
+                        value += "Item\t\t\t\t\t\t\t\t: " + hmap.get("item") + "\n";
+                        value += "Quantity\t\t\t\t: " + hmap.get("quantity") + "\n";
+                        value += "Purpose\t\t\t\t: " + hmap.get("purpose") + "\n";
+                        a.add(value);
+
+                    }
+                    else if(month == "All" && item != "All")
+                    {
                         if (item.contains(checkItem)) {
+                            value += d.getKey() + "\n\n";
+                            value += "Student ID\t: " + hmap.get("studentId") + "\n";
+                            value += "Item\t\t\t\t\t\t\t\t: " + hmap.get("item") + "\n";
+                            value += "Quantity\t\t\t\t: " + hmap.get("quantity") + "\n";
+                            value += "Purpose\t\t\t\t: " + hmap.get("purpose") + "\n";
+                            a.add(value);
+                        }
+                    }
+                    else if(month != "All" && item == "All"){
+                        if (month.contains(monthNum.get(checkMonth))) {
                             value += d.getKey() + "\n\n";
                             value += "Student ID\t: " + hmap.get("studentId") + "\n";
                             value += "Item\t\t\t\t\t\t\t\t: " + hmap.get("item") + "\n";

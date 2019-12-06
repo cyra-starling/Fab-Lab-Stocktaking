@@ -80,6 +80,7 @@ public class Student extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        CheckoutButton.bringToFront();
 
         MainCart = findViewById(R.id.mainCart);
         ArrayAdapter arrayAdapter3 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,cartList);

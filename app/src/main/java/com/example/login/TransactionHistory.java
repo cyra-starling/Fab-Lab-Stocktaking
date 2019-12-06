@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,16 +51,16 @@ public class TransactionHistory extends AppCompatActivity {
             Map.Entry pair = (Map.Entry) it.next();
             updateTransactionHistory(pair.getKey().toString(), pair.getValue().toString());
             transactionText = transactionText + pair.getKey().toString() + ":" + pair.getValue().toString() + "\n";
-            it.remove(); // avoids a ConcurrentModificationException
+            //it.remove(); // avoids a ConcurrentModificationException
         }
         transaction_list.setText(transactionText);
-
 
         //update database
         for (final Map.Entry<String, Integer> entry : hashmap.entrySet()) {
             final String key = totalStock.child("totalStock").child(entry.getKey()).getKey();
+            System.out.println(key);
             //if capacitor
-            if (key.substring(key.length() - 2).equals("pF")) {
+            if (key.contains("pF")) {
                 totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -83,7 +84,7 @@ public class TransactionHistory extends AppCompatActivity {
             }
 
             //if resistor
-            if (key.substring(key.length() - 3).equals("ohm")) {
+            if (key.contains("ohm")) {
                 totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -107,7 +108,7 @@ public class TransactionHistory extends AppCompatActivity {
             }
 
             //if transistor
-            if (key.substring(0, 3).equals("NPN") || (key.substring(0, 3).equals("PNP"))) {
+            if (key.contains("NPN") || (key.contains("PNP"))) {
                 totalStock.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
