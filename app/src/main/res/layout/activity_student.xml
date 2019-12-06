@@ -22,6 +22,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/CheckoutButton"
+        android:layout_width="150dp"
+        android:layout_height="65dp"
+        android:background="@android:color/transparent"
+        android:drawableEnd="@drawable/ic_right"
+        android:stateListAnimator="@null"
+        android:text="Proceed"
+        android:textAlignment="textEnd"
+        android:textColor="@color/accent"
+        android:textSize="20dp"
+        android:elevation="0.1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/bottomBar"
+        app:layout_constraintTop_toTopOf="@+id/bottomBar" />
+
+    <Button
         android:id="@+id/PopupButton"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -29,6 +45,7 @@
         android:text="+"
         android:textColor="@color/primary_text"
         android:textSize="30dp"
+        android:shadowColor="@android:color/transparent"
         android:layout_margin="20dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,20 +54,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1" />
 
-    <Button
-        android:id="@+id/CheckoutButton"
-        android:layout_width="150dp"
-        android:layout_height="65dp"
-        android:background="@drawable/roundrect"
-        android:text="Proceed"
-        android:textAlignment="center"
-        android:textColor="@color/primary_text"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.975"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bottomBar" />
 
     <TextView
         android:id="@+id/bottomBar"

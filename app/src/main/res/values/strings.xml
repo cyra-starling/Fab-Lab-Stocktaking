@@ -2,6 +2,6 @@
     <string name="app_name">Login</string>
     <string name="title_activity_student">Student</string>
     <string name="title_activity_staff">Staff</string>
-    <string name="date_selected1"></string>
-    <string name="date_selected2"></string>
+    <string name="date_selected1">Select Start Date</string>
+    <string name="date_selected2">Select End Date</string>
 </resources>

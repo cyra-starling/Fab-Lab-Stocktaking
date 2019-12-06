@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
+    android:background="@color/background"
     tools:context=".staff.Staff">
 
 
@@ -16,7 +16,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="STAFF MAIN"
+        android:text="Welcome \nFablab Staff "
         android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,13 +28,14 @@
         android:id="@+id/CheckStockButton"
         android:layout_width="134dp"
         android:layout_height="58dp"
-        android:layout_marginTop="155dp"
+        android:layout_margin="20dp"
         android:text="Check Stock"
-        android:textStyle="bold"
+        android:textColor="@color/primary_text"
+        android:background="@drawable/roundrect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/header" />
 
     <Button
         android:id="@+id/ChartButton"
@@ -42,7 +43,8 @@
         android:layout_height="58dp"
         android:layout_marginTop="12dp"
         android:text="Chart"
-        android:textStyle="bold"
+        android:textColor="@color/primary_text"
+        android:background="@drawable/roundrect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
