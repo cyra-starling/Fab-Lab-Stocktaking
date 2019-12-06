@@ -33,7 +33,10 @@ public class Staff extends AppCompatActivity {
 
     public static final FirebaseDatabase database = FirebaseDatabase.getInstance("https://fablabstock.firebaseio.com/");
     public static final DatabaseReference fablabstockRef = database.getReference("fablabstock");
+    public static final DatabaseReference totalStockRef = database.getReference("totalStock");
+    public static final DatabaseReference threshold = database.getReference("Threshold");
 
+    public String notificationContent = "";
     public static final String CHANNEL_ID = "channel";
     private NotificationManagerCompat notificationManager;
 
@@ -71,30 +74,67 @@ public class Staff extends AppCompatActivity {
         //Notification channel
         createNotificationchannel();
 
-        fablabstockRef.addValueEventListener(new ValueEventListener() {
+        threshold.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String notificationContent = "";
-                for (DataSnapshot item : dataSnapshot.child("totalStock").getChildren()) {
-                    for (DataSnapshot id : item.getChildren()) {
-                        // if quantity of item in totalstock is lower than in threshold
-                        if ((int) dataSnapshot.child("threshold").child(item.getKey()).getValue() > (int) id.getValue()) {
 
-                            notificationContent += item.getKey() + " " + id.getKey() + "is low on stock: " + id.getValue() + "\n";
+                final DataSnapshot thresholdd = dataSnapshot;
+
+
+                totalStockRef.addValueEventListener(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot item : dataSnapshot.getChildren()) {
+                            for (DataSnapshot id : item.getChildren()) {
+
+
+
+                                // if quantity of item in totalstock is lower than in threshold (int)
+                                if ( (int) (long) thresholdd.child(item.getKey().toString()).getValue()  > (int) (long) id.getValue()) {
+
+                                    notificationContent += item.getKey() + " " + id.getKey() + " is low on stock: " + id.getValue() + "\n";
+
+
+                                }
+
+                                if (!notificationContent.isEmpty()) {
+                                    System.out.println(notificationContent);
+
+                                    String notificationTitle = "STOCK LOW";
+                                    Notification notification = new NotificationCompat.Builder(Staff.this, CHANNEL_ID)
+                                            .setSmallIcon(R.drawable.ic_android_black_24dp)
+                                            .setContentTitle(notificationTitle)
+                                            .setContentText(notificationContent)
+                                            .setStyle(new NotificationCompat.BigTextStyle()
+                                                    .bigText(notificationContent))
+                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                            .build();
+
+                                    notificationManager.notify(1, notification);
+                                }
+
+                            }
+
                         }
+
                     }
-                }
-                if (!notificationContent.isEmpty()) {
-                    String notificationTitle = "LOW STOCK";
-                    Notification notification = new NotificationCompat.Builder(Staff.this, CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_android_black_24dp)
-                            .setContentTitle(notificationTitle)
-                            .setContentText(notificationContent)
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                            .build();
-                    notificationManager.notify(1, notification);
-                }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        System.out.println("CANCELLED");
+
+                    }
+
+                });
+
+
+
+
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 System.out.println("CANCELLED");
