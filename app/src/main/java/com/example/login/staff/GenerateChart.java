@@ -122,7 +122,7 @@ public class GenerateChart extends AppCompatActivity {
         spinner = findViewById(R.id.progressBar3);
         spinner.setVisibility(View.VISIBLE);
 
-        fablabStock.getReference("transactionHistory").orderByChild("YYMMDD").startAt("190101").endAt("191231").addListenerForSingleValueEvent(new ValueEventListener() {
+        fablabStock.getReference("transactionHistory").orderByChild("YYMMDD").startAt(dateFrom).endAt(dateTo).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 HashMap itemList = new HashMap<String, Integer>();

@@ -29,7 +29,7 @@
         android:layout_width="134dp"
         android:layout_height="58dp"
         android:layout_margin="20dp"
-        android:text="Check Stock"
+        android:text="Transaction History"
         android:textColor="@color/primary_text"
         android:background="@drawable/roundrect"
         app:layout_constraintEnd_toEndOf="parent"
